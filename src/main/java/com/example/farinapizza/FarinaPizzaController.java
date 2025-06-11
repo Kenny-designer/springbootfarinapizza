@@ -7,6 +7,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class FarinaPizzaController {
@@ -39,6 +40,11 @@ public class FarinaPizzaController {
         }
     }
 
+    @GetMapping({"/updatePwd"})
+    public String UpdatePwdPage() {
+        return "updatePwd";
+    }
+
     @GetMapping({"/store"})
     public String viewStorePage() {
         return "store";
@@ -52,5 +58,12 @@ public class FarinaPizzaController {
     @GetMapping({"/booking"})
     public String viewBookingPage() {
         return "booking";
+    }
+
+    @GetMapping({"/transition"})
+    public String viewTransitionPage(@RequestParam(value = "meg") String meg,
+                                     Model model) {
+        model.addAttribute("meg", meg);
+        return "transition";
     }
 }

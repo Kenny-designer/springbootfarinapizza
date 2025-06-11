@@ -29,4 +29,9 @@ public class FarinaPizzaRestController {
     public String forgetPwd() {
         return "member";
     }
+
+    @PostMapping({"/updatePwd"})
+    public String updatePwd() {
+        return "member";
+    }
 }

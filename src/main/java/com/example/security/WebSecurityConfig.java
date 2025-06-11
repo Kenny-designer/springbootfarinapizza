@@ -43,7 +43,7 @@ public class WebSecurityConfig { // Spring Security 的設定檔
                 )
                 .logout(logout -> logout
                                 // 此處為 Spring Security 會攔截 POST "/logout"，(controller無須撰寫)，將Session 中的 SecurityContext 清除
-                                .logoutSuccessUrl("/login").permitAll()
+                                .logoutSuccessUrl("/index?meg").permitAll()
                         //登出成功後，會自動 redirect 到 "/login"
                 );
         return http.build();
