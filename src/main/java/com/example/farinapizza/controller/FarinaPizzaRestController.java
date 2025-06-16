@@ -1,8 +1,11 @@
-package com.example.farinapizza;
+package com.example.farinapizza.controller;
 
-import com.example.member.MemberService;
+import com.example.farinapizza.dto.RegisterForm;
+import com.example.farinapizza.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -10,19 +13,12 @@ public class FarinaPizzaRestController {
     @Autowired
     private MemberService memberService;
 
-    @PostMapping({"/login"})
-    public String login() {
-        return "member";
-    }
-
     @PostMapping({"/signup"})
-    public String signup() {
-        return "member";
-    }
+    public boolean signup(@RequestBody RegisterForm form) { return memberService.addMember(form.toEntity()); }
 
     @PostMapping({"/checkEmail"})
-    public String checkEmail() {
-        return "member";
+    public boolean checkEmail(@RequestParam(value = "email") String email) {
+        return memberService.checkEmailAvailable(email);
     }
 
     @PostMapping({"/forgetPwd"})

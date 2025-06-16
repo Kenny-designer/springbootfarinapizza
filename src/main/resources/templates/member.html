@@ -132,7 +132,9 @@
                                     <input type="password" class="form-control" id="loginPassword" name="password" required>
                                     <button type="button" class="btn btn-outline-light" onclick="togglePassword('loginPassword', this)">顯示</button>
                                 </div>
-                                <span id="loginPassword_error" style="color: red; font-size:18px; font-family:Arial;"></span> <!-- m -->
+                                <div th:if="${param.error}" style="color: red; font-size:18px; font-family:Arial;">
+                                    <div>帳號或密碼錯誤</div>
+                                </div>
                             </div>
                             <button id="login_button" type="submit" class="btn btn-warning w-100">登入</button> <!-- m -->
                         </form>
@@ -203,7 +205,7 @@
     </div>
 
     </body>
-    <script>
+    <script th:inline="javascript">
       function showAuthForm(button) {
         const type = button.getAttribute('data-type');
 
@@ -292,75 +294,48 @@
             }
         });
 
-        /* m */
         // (AJAX回傳)檢查Email是否已被註冊結果
         function check_result(data) {
             $('#check_ok').html(``);
             $('#check_error').html(``);
             switch (data.trim()) {
-                case "success":
+                case "true":
                     $('#check_ok').html(`ok!`);
                     break;
-                case "false":
-                    $('#check_error').html(`此帳號已被註冊。`);
-                    break;
                 default:
-                    alert(data.trim());
+                    $('#check_error').html(`此帳號已被註冊。`);
             }
         }
 
         // (AJAX傳送)檢查Email是否已被註冊
         function check_bnd() {
             $.ajax({
-                url: "<%= url_checkemail %>", // 欲請求的API或網址
+                url: checkEmailUrl, // 欲請求的API或網址
                 type: 'POST',
-                data: { // 欲傳遞的資料，使用JSON格式(鍵值對)
+                data: {
                     email: $('#registerEmail').val()
+                },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
                 },
                 success: data => check_result(data), // success 代表請求成功(status:200)，data為回傳回來的資料，並送到自定義的function
                 error: err => console.log(err) // 若發生請求失敗，會執行console.log(err)
             })
         }
 
-        // (AJAX回傳)登入結果
-        function login_result(data) {
-            switch (data.trim()) {
-                case "success":
-                    let branch = Cookies.get('branch');
-                    if ( branch !== undefined ) {
-                        window.location.href = "transition.jsp?meg=nonfinishedbooking";
-                    }
-                    else {
-                        window.location.href = "transition.jsp?meg=newlogin"; // 轉跳至過場頁面顯示alert
-                    }
-                    break;
-                case "resend":
-                    alert("您的E-mail尚未完成驗證");
-                    let email = $('#loginEmail').val();
-                    encoded = encodeURIComponent(email);
-                    window.location.href = "transition.jsp?meg=resend&email="+encoded; // 轉跳至過場頁面顯示alert
-                    break;
-                case "The password is incorrect.":
-                    $('#loginPassword_error').html(`密碼錯誤`);
-                    break;
-                case "The email does not exist.":
-                    $('#loginEmail_error').html(`此E-mail尚未註冊`);
-                    break;
-                default:
-                    alert(data.trim());
-              }
-        }
-
         // (AJAX傳送)登入
         function login_bnd() {
             $.ajax({
-                url: "<%= url_login %>", // 欲請求的API或網址
+                url: loginUrl, // 欲請求的API或網址
                 type: 'POST',
                 data: { // 欲傳遞的資料，使用JSON格式(鍵值對)
                         email: $('#loginEmail').val(),
                         password: $('#loginPassword').val()
                 },
-                success: data => login_result(data), // success 代表請求成功(status:200)，data為回傳回來的資料，並送到自定義的function
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: data => console.log(data.success), // success 代表請求成功(status:200)，印出true
                 error: err => console.log(err) // 若發生請求失敗，會執行console.log(err)
             })
         }
@@ -368,7 +343,7 @@
         // (AJAX回傳)註冊結果
         function signup_result(data) {
             switch (data.trim()) {
-                case "success":
+                case "true":
                     let email = $('#registerEmail').val();
                     encoded = encodeURIComponent(email);
                     window.location.href = "transition.jsp?meg=send&email="+encoded;  // 轉跳至過場頁面顯示alert
@@ -384,12 +359,16 @@
         // (AJAX傳送)註冊
         function signup_bnd() {
             $.ajax({
-                url: "<%= url_signup %>", // 欲請求的API或網址
+                url: signupUrl, // 欲請求的API或網址
                 type: 'POST',
-                data: { // 欲傳遞的資料，使用JSON格式(鍵值對)
-                    name: $('#registerUsername').val(),
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: $('#registerUsername').val(),
                     email: $('#registerEmail').val(),
                     password: $('#registerPassword').val()
+                }),
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
                 },
                 success: data => signup_result(data), // success 代表請求成功(status:200)，data為回傳回來的資料，並送到自定義的function
                 error: err => console.log(err) // 若發生請求失敗，會執行console.log(err)
@@ -397,7 +376,7 @@
         }
 
         // (AJAX回傳)忘記密碼
-        function forgotpwd_result(data) {
+        function forgotPwd_result(data) {
             switch (data.trim()) {
                 case "false":
                     let email = $('#forgotEmail').val();
@@ -413,14 +392,17 @@
         }
 
         // (AJAX傳送)忘記密碼
-        function forgotpwd_bnd() {
+        function forgotPwd_bnd() {
             $.ajax({
-                url: "<%= url_forgetpwd %>", // 欲請求的API或網址
+                url: forgotPwdUrl, // 欲請求的API或網址
                 type: 'POST',
                 data: { // 欲傳遞的資料，使用JSON格式(鍵值對)
                     email: $('#forgotEmail').val()
                 },
-                success: data => forgotpwd_result(data), // success 代表請求成功(status:200)，data為回傳回來的資料，並送到自定義的function
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: data => forgotPwd_result(data), // success 代表請求成功(status:200)，data為回傳回來的資料，並送到自定義的function
                 error: err => console.log(err) // 若發生請求失敗，會執行console.log(err)
             })
         }
@@ -434,6 +416,13 @@
             $('#loadingSpinner').fadeOut(); // 隱藏 loading 遮罩
             $('#login_button, #forgotpwd_button, #register_button, #checkemail').prop('disabled', false); // 啟用按鈕
         }
+
+        let loginUrl = /*[[@{/login}]]*/ "";
+        let signupUrl = /*[[@{/signup}]]*/ "";
+        let checkEmailUrl = /*[[@{/checkEmail}]]*/ "";
+        let forgotPwdUrl = /*[[@{/forgotPwd}]]*/ "";
+        let csrfHeader = [[${_csrf.headerName}]]; // 取得用來放 CSRF Token 的 header 名稱
+        let csrfToken = [[${_csrf.token}]]; // 取得CSRF Token 本體
 
         $(document).ajaxStart(function () { // 所有ajax請求都執行
             showLoading();
@@ -564,7 +553,7 @@
             }
 
             //  檢查通過，呼叫 AJAX 發送
-            forgotpwd_bnd();
+            forgotPwd_bnd();
         });
     </script>
 </html>

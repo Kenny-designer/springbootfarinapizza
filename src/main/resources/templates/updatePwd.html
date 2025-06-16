@@ -214,7 +214,7 @@
         // (AJAX傳送)重設密碼
         function updatePwdBnd() {
             $.ajax({
-                url: "/updatePwd", // 欲請求的API或網址
+                url: updatePwdUrl, // 欲請求的API或網址
                 type: 'POST',
                 data: {
                     email: $('#email').val(),
@@ -272,8 +272,9 @@
 <!--            }-->
 <!--        });-->
 
-        let csrfHeader = [[${headerName}]]; // 取得用來放 CSRF Token 的 header 名稱
-        let csrfToken = [[${token}]]; // 取得CSRF Token 本體
+        let updatePwdUrl = /*[[@{/updatePwd}]]*/ "";
+        let csrfHeader = /*[[${_csrf.headerName}]]*/ ""; // 取得用來放 CSRF Token 的 header 名稱
+        let csrfToken = /*[[${_csrf.token}]]*/ ""; // 取得CSRF Token 本體
 
         $('#forgetpwd').on("submit", function (event) {
             event.preventDefault();  // 阻止預設提交

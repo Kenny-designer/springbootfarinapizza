@@ -83,6 +83,11 @@
 			<groupId>nz.net.ultraq.thymeleaf</groupId> <!-- 取得 前端設計 -->
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId> <!--無須重新啟動整個程式，在執行期間，自動偵測修改並重新編譯 -->
+			<optional>true</optional> <!-- 這樣不會在打包進 production -->
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -90,6 +95,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+					<mainClass>com.example.farinapizza.FarinaPizzaApplication</mainClass> <!-- add your actual main class -->
+					<!-- 必須告知雲端的主機，哪一個class是程式的執行進入點 -->
+				</configuration>
 			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,4 +1,4 @@
-package com.example.member;
+package com.example.farinapizza.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

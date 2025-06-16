@@ -1,5 +1,6 @@
-package com.example.member;
+package com.example.farinapizza.repository;
 
+import com.example.farinapizza.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,13 @@
-package com.example.security;
+package com.example.farinapizza.security;
 
-import com.example.member.Member;
+import com.example.farinapizza.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails { // UserDetails：已經定義好功能的介面，只需要實作它即可
-    private Member member;
+    private final Member member;
 
     public CustomUserDetails(Member member) {
         this.member = member;
@@ -45,7 +45,7 @@ public class CustomUserDetails implements UserDetails { // UserDetails：已經�
 
     @Override
     public String getUsername() {
-        return member.getUsername();
+        return member.getEmail();
     } // 回傳user的username，與輸入的username進行比對
 }
 

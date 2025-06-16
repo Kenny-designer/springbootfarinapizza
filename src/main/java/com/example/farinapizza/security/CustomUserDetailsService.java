@@ -1,7 +1,7 @@
-package com.example.security;
+package com.example.farinapizza.security;
 
-import com.example.member.Member;
-import com.example.member.MemberService;
+import com.example.farinapizza.entity.Member;
+import com.example.farinapizza.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
