@@ -1,8 +1,10 @@
 package com.example.farinapizza.service;
 
+import com.example.farinapizza.dto.RegisterForm;
 import com.example.farinapizza.entity.Member;
 import com.example.farinapizza.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,10 +22,15 @@ public class MemberService {
     }
 
     // 註冊
-    public boolean addMember(Member member) {
+    public boolean addMember(RegisterForm form) {
+        Member member = form.toEntity();
         if ( checkEmailAvailable(member.getEmail()) ) {
-            Member newMember = memberRepository.save(member);
-            return true;
+            try {
+                memberRepository.save(member);
+                return true;
+            }
+            // if Email duplicated；必須先在@Entity中，該欄位加入(unique = true)
+            catch (DataIntegrityViolationException e) { return false; }
         }
         else { return false; }
     }

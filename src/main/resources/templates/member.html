@@ -344,9 +344,7 @@
         function signup_result(data) {
             switch (data.trim()) {
                 case "true":
-                    let email = $('#registerEmail').val();
-                    encoded = encodeURIComponent(email);
-                    window.location.href = "transition.jsp?meg=send&email="+encoded;  // 轉跳至過場頁面顯示alert
+                    window.location.href = transitionSendUrl;  // 轉跳至過場頁面顯示alert
                     break;
                 case "false":
                     $('#check_error').html(`此帳號已被註冊。`);
@@ -417,6 +415,8 @@
             $('#login_button, #forgotpwd_button, #register_button, #checkemail').prop('disabled', false); // 啟用按鈕
         }
 
+
+        let transitionSendUrl = /*[[@{/transition?meg=send}]]*/ "";
         let loginUrl = /*[[@{/login}]]*/ "";
         let signupUrl = /*[[@{/signup}]]*/ "";
         let checkEmailUrl = /*[[@{/checkEmail}]]*/ "";

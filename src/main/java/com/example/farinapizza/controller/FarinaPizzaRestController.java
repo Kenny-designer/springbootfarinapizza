@@ -13,13 +13,15 @@ public class FarinaPizzaRestController {
     @Autowired
     private MemberService memberService;
 
-    @PostMapping({"/signup"})
-    public boolean signup(@RequestBody RegisterForm form) { return memberService.addMember(form.toEntity()); }
-
     @PostMapping({"/checkEmail"})
     public boolean checkEmail(@RequestParam(value = "email") String email) {
         return memberService.checkEmailAvailable(email);
     }
+
+    @PostMapping({"/signup"})
+    public boolean signup(@RequestBody RegisterForm form) { return memberService.addMember(form); }
+
+
 
     @PostMapping({"/forgetPwd"})
     public String forgetPwd() {

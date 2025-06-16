@@ -14,18 +14,14 @@ public class FarinaPizzaController {
 
     @GetMapping({"/", "/index"})
     public String viewHomePage(Model model) {
-        model.addAttribute("name", (memberService.getUsername()));
+        if ( memberService.isLogin() ) { model.addAttribute("name", (memberService.getUsername())); }
         return "index";
     }
 
     @GetMapping({"/login"})
     public String viewLoginPage(Model model) {
-        if ( memberService.isLogin() ) {
-            return "redirect:/";
-        }
-        else {
-            return "member";
-        }
+        if ( memberService.isLogin() ) { return "redirect:/"; }
+        else { return "member"; }
     }
 
     @GetMapping({"/verificationMail"})
@@ -50,8 +46,7 @@ public class FarinaPizzaController {
     }
 
     @GetMapping({"/transition"})
-    public String viewTransitionPage(@RequestParam(value = "meg") String meg,
-                                     Model model) {
+    public String viewTransitionPage(@RequestParam(value = "meg") String meg, Model model) {
         model.addAttribute("meg", meg);
         return "transition";
     }
