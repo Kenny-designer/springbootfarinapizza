@@ -45,10 +45,7 @@ public class EmailService {
     }
 
     // 設定 訂位成功 訊息 並寄送
-    public void setMessage(String email, String branch, String date, String time, String people, String note) {
-        if ( note.equals("None")) {
-            note = "無";
-        }
+    public void sendBookingSuccessfullyMail(String email, String branch, String date, String time, String people, String note) {
         this.subject = "訂位資訊";
         this.htmlContent = "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; padding: 24px; max-width: 480px;\">" +
                 "<h2 style=\"color: #2e7d32; margin-bottom: 20px;\">🍕 Farina Pizza 訂位成功通知</h2>" +
@@ -71,7 +68,7 @@ public class EmailService {
                 "</tr>" +
                 "<tr>" +
                 "<td style=\"padding: 6px 10px; text-align: right; font-weight: bold;\">備註：</td>" +
-                "<td style=\"padding: 6px 10px; color: #750000;\">" + note + "</td>" +
+                "<td style=\"padding: 6px 10px; color: #750000;\">" + (note.equals("None") ? "無" : note) + "</td>" +
                 "</tr>" +
                 "</table>" +
                 "<p style=\"margin-top: 20px; color: red; font-size: 15px; font-weight: bold;\">" +
@@ -83,10 +80,7 @@ public class EmailService {
     }
 
     // 設定 寄給店長的訂單通知 訊息 並寄送
-    public void setMessage(String name, String email, String branch, String date, String time, String people, String note) {
-        if ( note.equals("None")) {
-            note = "無";
-        }
+    public void sendCreateOrderSuccessfullyMail(String name, String email, String branch, String date, String time, String people, String note) {
         this.subject = "訂單通知";
         this.htmlContent = "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; padding: 24px; max-width: 480px;\">" +
                 "<h2 style=\"color: #2e7d32; margin-bottom: 20px;\">🍕 Farina Pizza 訂單通知!</h2>" +
@@ -117,7 +111,7 @@ public class EmailService {
                 "</tr>" +
                 "<tr>" +
                 "<td style=\"padding: 6px 10px; text-align: right; font-weight: bold;\">備註：</td>" +
-                "<td style=\"padding: 6px 10px; color: #750000;\">" + note + "</td>" +
+                "<td style=\"padding: 6px 10px; color: #750000;\">" + (note.equals("None") ? "無" : note) + "</td>" +
                 "</tr>" +
                 "</table>" +
                 "</div>";

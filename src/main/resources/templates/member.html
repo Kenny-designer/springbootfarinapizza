@@ -343,14 +343,14 @@
         // (AJAX回傳)註冊結果
         function signup_result(data) {
             switch (data.trim()) {
-                case "true":
+                case "success":
                     window.location.href = transitionSendUrl;  // 轉跳至過場頁面顯示alert
                     break;
-                case "false":
+                case "fail":
                     $('#check_error').html(`此帳號已被註冊。`);
                     break;
                 default:
-                    alert(data.trim());
+                    $('#check_error').html(data.trim());
             }
         }
 

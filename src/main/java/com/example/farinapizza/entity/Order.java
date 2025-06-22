@@ -11,7 +11,14 @@ import lombok.Setter;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int order_id;
+    private int id;
+
+    @ManyToOne
+    // @JoinColumn 可省略，帶不建議省略(較易維護)
+    @JoinColumn(name = "member_id", referencedColumnName = "id",
+            foreignKey = @ForeignKey(name = "fk_order_member") // 指定外鍵名稱，若有設定 ddl-auto=create/update 會自動產生
+    )
+    private Member member;
 
     @Column
     private String email;

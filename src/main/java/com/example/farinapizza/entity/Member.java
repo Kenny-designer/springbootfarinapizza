@@ -13,10 +13,10 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @Column(length = 50)
     private String username;
 
-    @Column(unique = true)
+    @Column(length = 100, unique = true) // (unique = true) 保證唯一 + 自動建立唯一索引，提高該表的查詢效能
     private String email;
 
     @Column

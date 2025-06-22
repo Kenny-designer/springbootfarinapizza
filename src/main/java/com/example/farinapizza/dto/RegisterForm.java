@@ -1,28 +1,26 @@
 package com.example.farinapizza.dto;
 
 import com.example.farinapizza.entity.Member;
-import com.example.farinapizza.util.GenerateVerificationCode;
-import com.example.farinapizza.util.Hashing;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter
 @Setter
-// 註冊表單轉換成@Entity物件
+// 註冊表單轉換成@Entity物件，且保持僅單一功能-封裝、驗證長度、格式，不負責商業邏輯的處理
 public class RegisterForm {
+    // 此處的屬性只包含前端傳遞來的各個欄位，不包含其餘後端資料庫的欄位
     private String username;
     private String email;
     private String password;
 
-    // Getter & Setter 一定要有，Spring 才能幫你塞值
-
-    public Member toEntity() {
+    // 此轉換器只執行單純的 @Entity 的 DTO
+    public Member toEntity(String encodedPassword, short verificationCode) {
         Member member = new Member();
-        member.setUsername(this.username);
-        member.setEmail(this.email);
-        member.setPassword(Hashing.hashing(this.password)); // 密碼加密
-        member.setRegistered(GenerateVerificationCode.generateVerificationCode()); // 自動產生驗證碼
+        member.setUsername(username);
+        member.setEmail(email);
+        member.setPassword(encodedPassword);
+        member.setRegistered(verificationCode);
         return member;
     }
 }

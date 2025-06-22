@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -14,12 +15,15 @@ public class WebSecurityConfig { // Spring Security 的設定檔
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Bean // 這代表：Spring 會建立一個 BCryptPasswordEncoder 的物件，並註冊成一個 Bean，類型為 PasswordEncoder，名稱就是方法名稱 passwordEncoder
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); } // 當被注入時，變數名稱可隨意命名；而當有相同類型的不同實體，其必須用@Qualifier指定名稱
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(customUserDetailsService); // 須代入 interface UserDetailsService 的實作
         // 設定驗證的方式，會自動呼叫loadUserByUsername()
-        authProvider.setPasswordEncoder( new BCryptPasswordEncoder() );
+        authProvider.setPasswordEncoder( passwordEncoder() ); // 此處可以直接使用@Bean的passwordEncoder()，除非另外在該@Configuration中，再撰寫@Autowired，但無必要
         // 須代入 interface PasswordEncoder 的實作， Spring Security 已將 BCryptPasswordEncoder 實作完成 interface PasswordEncoder
         // 設定密碼加密的方式，會把輸入的密碼用同樣的雜湊方式再加密一次
         return authProvider;
